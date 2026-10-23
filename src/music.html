@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'">
+  <title>BossTrack</title>
+  <link rel="stylesheet" href="styles/music.css">
+</head>
+<body>
+  <header class="top"><strong class="brand">BossTrack</strong><span>Procedural music</span><button id="about-open" class="about-open">About</button></header>
+  <dialog id="about" class="about" aria-labelledby="about-title">
+    <div class="heading"><h2 id="about-title">BossTrack</h2><button id="about-close">Close</button></div>
+    <p><span id="about-version">Version</span> · Authored by Ganktronics · <a href="https://ganktronics.itch.io">ganktronics.itch.io</a></p>
+    <h3>Your music</h3>
+    <p>Songs, WAVs, stems and MIDI you make with BossTrack are yours. Use them in personal or commercial projects. You don't have to credit Ganktronics or BossTrack, but you can if you want to.</p>
+    <p>You're responsible for how you use BossTrack and what you make with it, including any sounds you load into it yourself.</p>
+    <h3>License</h3>
+    <p>BossTrack is released under the Apache License 2.0. You can use, change and share it, commercially too. If you share it or a changed version, include the LICENSE and NOTICE files, keep the credit to Ganktronics, and mark the files you changed. It comes with no warranty.</p>
+    <pre id="about-notice" class="about-text"></pre>
+    <details><summary>Full license text</summary><pre id="about-license" class="about-text"></pre></details>
+    <h3>Sound credits</h3>
+    <p class="hint">The recorded instruments come from these libraries. The synth instruments are part of BossTrack.</p>
+    <div id="about-credits"></div>
+    <h3>Software</h3>
+    <p class="hint">BossTrack runs on Electron (MIT License), which includes Chromium. Their licenses are in LICENSE.electron.txt and LICENSES.chromium.html in the BossTrack folder.</p>
+  </dialog>
+  <main>
+    <section class="intro">
+      <h1>Composition</h1>
+      <p>Procedurally generated notes, songs, and loops.</p>
+    </section>
+    <section class="stage" aria-label="Preview">
+      <div class="heading"><h2>Audible mix</h2><span id="duration">Not rendered</span></div>
+      <canvas id="wave" class="wave" aria-label="Rendered audio waveform"></canvas>
+      <div class="transport">
+        <label class="seed">Zoom <select id="wave-zoom" disabled><option value="1">Full track</option><option value="2">2x</option><option value="4">4x</option><option value="8">8x</option></select></label>
+        <label class="seed">View position <input id="wave-scroll" type="range" min="0" max="100" step="0.1" value="0" disabled></label>
+        <output id="wave-range" class="timeline">Generate to view the timeline</output>
+      </div>
+      <div class="transport">
+        <label class="seed">Form <select id="form"></select></label>
+        <label class="seed"><input id="long-track" type="checkbox"> Long track</label>
+        <label class="seed">Length <input id="length" type="range" min="120" max="300" step="15" value="180" disabled><output id="length-value">3:00</output></label>
+        <label class="seed">Use <select id="use"></select></label>
+        <label class="seed">Key <select id="key"><option value="">Auto (seed)</option></select></label>
+        <label class="seed">Mode <select id="mode"><option value="">Auto</option><option value="major">Major</option><option value="minor">Minor</option></select></label>
+        <label class="seed">BPM <input id="bpm" type="number" min="30" max="300" step="any" placeholder="Auto"></label>
+        <label class="seed">Genre <select id="genre"></select></label>
+        <label class="seed">Feeling <select id="feeling"></select></label>
+        <label class="seed">Melody <select id="melody"></select></label>
+        <label class="seed">Drum pattern <select id="drums"></select></label>
+        <label class="seed">Bass pattern <select id="bass"></select></label>
+        <label class="seed">Harmony <select id="progression"></select></label>
+        <label class="seed">Pad pattern <select id="pad"></select></label>
+        <label class="seed">Seed <input id="seed" type="number" min="0" max="4294967295" step="1" value="42" required></label>
+        <button id="new-seed">New seed</button>
+        <button id="clear-choices">Clear</button>
+        <button id="generate" class="primary">Generate</button>
+        <button id="cancel-render" hidden>Cancel render</button>
+        <button id="undo" disabled>Undo</button><button id="redo" disabled>Redo</button>
+        <button id="play" disabled>Play</button>
+        <button id="stop" disabled>Stop</button>
+        <button id="repeat" aria-pressed="false" disabled>Repeat</button>
+      </div>
+      <div class="transport"><label class="seed">Sound preset <select id="sound-preset"><option value="">Manual / no preset</option></select></label><button id="apply-preset" disabled>Apply preset</button></div>
+      <div class="transport"><label class="seed">Saved sound <select id="user-preset"><option value="">Choose a saved sound</option></select></label><button id="apply-user-preset" disabled>Apply saved sound</button><label class="seed">Preset name <input id="preset-name" maxlength="80"></label><button id="save-user-preset" disabled>Save sound preset</button></div>
+      <div class="transport"><label class="seed"><input id="vary-instruments" type="checkbox"> Vary instruments with seed</label><label class="seed"><input id="favorites-only" type="checkbox"> Use favorites where available</label></div>
+      <div class="transport"><button id="set-genre-default" disabled>Set as genre default</button><button id="reset-genre-default" disabled>Reset genre default</button><output id="genre-default-state" class="timeline"></output></div>
+      <p id="palette-summary" class="hint"></p>
+      <p id="loop-info" class="hint">Choose Loop for a repeating WAV.</p>
+      <dl class="facts"><div><dt>Tempo</dt><dd id="tempo">108 BPM</dd></div><div><dt>Key</dt><dd id="harmony">—</dd></div><div><dt>Groove</dt><dd id="groove">—</dd></div><div><dt>Length</dt><dd id="bars">4 bars</dd></div><div><dt>Format</dt><dd id="format">48 kHz / 24-bit WAV</dd></div></dl>
+      <p id="mix-peak" class="hint" aria-live="polite">Mix peak: not measured</p>
+      <p id="loudness" class="hint" aria-live="polite">Integrated loudness: not measured</p>
+      <div id="sections" class="transport" aria-label="Song sections"></div>
+      <div class="transport"><label class="seed"><input id="keep-mix" type="checkbox" checked> Keep mix on Generate</label><label class="seed">Saved balance <select id="mix-preset"><option value="">Choose a saved balance</option></select></label><button id="apply-mix-preset" disabled>Apply balance</button><label class="seed">Balance name <input id="mix-preset-name" maxlength="80"></label><button id="save-mix-preset" disabled>Save balance</button><button id="reset-mix" disabled>Reset balance</button></div>
+      <h2>Musical parts</h2><div id="part-counts" class="transport" aria-label="Part counts"></div><div class="heading"><span id="mix-state">Full mix</span><button id="clear-solo" hidden>Clear solo</button></div><ul id="tracks" class="tracks"></ul>
+    </section>
+    <section class="save" aria-label="Export">
+      <div class="heading"><h2>Export WAV</h2><span>Saves what you hear. Muted parts are left out.</span></div>
+      <label><input id="normalize-wav" type="checkbox"> Normalize WAV to -16 LUFS</label>
+      <div class="transport"><label class="seed"><input id="exact-duration" type="checkbox"> Exact WAV duration</label><label class="seed">Seconds <input id="export-seconds" type="number" min="1" max="900" step="any" value="30" disabled></label></div>
+      <p id="folder" class="path">Saved to sounds/music</p>
+      <div class="transport"><label class="seed">Song title <input id="song-title" maxlength="120"></label><label class="seed"><input id="song-favorite" type="checkbox"> Favorite song</label><label class="seed">Tags <input id="song-tags" placeholder="cozy, wash" maxlength="491"></label><button id="save-library-info" disabled>Save library info</button></div>
+      <p id="library-edit-target" class="hint">Save or open a library song to update its title, favorite flag and tags.</p>
+      <div class="transport"><button id="save" class="primary" disabled>Save WAV</button><button id="save-stems" disabled>Save stems</button><button id="save-midi" disabled>Save MIDI</button><button id="save-song" disabled>Save Song</button><button id="open-song">Open Song</button><button id="open" disabled>Open folder</button></div>
+    </section>
+    <section class="save" aria-label="Song library"><div class="heading"><h2>Song library</h2><button id="refresh-library">Refresh library</button></div><div class="transport"><label class="seed">Search <input id="library-search" type="search" placeholder="Title, genre or tags"></label><label class="seed"><input id="library-favorites" type="checkbox"> Favorite songs only</label></div><p id="library-state" class="hint">Refresh to browse saved songs.</p><ul id="song-library" class="song-library"></ul></section>
+    <p id="status" role="status" aria-live="polite">Click Generate to compose and render seed 42.</p>
+  </main>
+  <script type="module" src="music.js"></script>
+</body>
+</html>

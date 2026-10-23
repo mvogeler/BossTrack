@@ -1,0 +1,22 @@
+{
+  "name": "bosstrack",
+  "productName": "BossTrack",
+  "version": "1.0.0",
+  "description": "Procedural instrumental music for games and videos",
+  "author": "Ganktronics",
+  "license": "Apache-2.0",
+  "homepage": "https://ganktronics.itch.io",
+  "private": true,
+  "type": "module",
+  "main": "main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:portable": "node tools/build-portable.js",
+    "postinstall": "node node_modules/electron/install.js",
+    "test": "node --test test/*.test.js"
+  },
+  "devDependencies": {
+    "electron": "^44.5.1",
+    "rcedit": "^5.0.2"
+  }
+}

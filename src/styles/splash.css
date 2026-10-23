@@ -1,0 +1,14 @@
+:root { --ink: #292f30; --straw: #e5d988; --sand: #e3d5cc; }
+html, body { height: 100%; }
+body { margin: 0; overflow: hidden; background: var(--ink); cursor: default; user-select: none; }
+.grid { position: fixed; inset: 0; display: grid; grid-template-columns: repeat(8, 1fr); grid-auto-rows: 1fr; gap: 2px; opacity: 0.16; }
+.grid div { transition: background-color 1.1s ease-in-out; }
+.studio, .wordmark { position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); opacity: 0; transition: opacity 0.4s ease; }
+.studio { width: 512px; image-rendering: pixelated; }
+.wordmark { width: 600px; overflow: visible; }
+.wordmark text { font: 900 104px "Segoe UI Black", "Arial Black", "Helvetica Neue", "Noto Sans", Arial, sans-serif; text-anchor: middle; letter-spacing: -2px; }
+.wordmark .edge { fill: var(--straw); stroke: var(--straw); stroke-width: 22px; stroke-linejoin: round; }
+.wordmark .face { stroke: var(--ink); stroke-width: 9px; stroke-linejoin: round; paint-order: stroke fill; }
+.version { position: fixed; right: 14px; bottom: 10px; color: var(--sand); font: 13px "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", "Noto Sans", sans-serif; opacity: 0.8; }
+body.studio-in .studio, body.title-in .wordmark { opacity: 1; }
+body.out { opacity: 0; transition: opacity 0.3s ease; }

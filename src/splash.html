@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'">
+  <title>BossTrack</title>
+  <link rel="stylesheet" href="styles/splash.css">
+</head>
+<body>
+  <div id="grid" class="grid" aria-hidden="true"></div>
+  <img id="studio" class="studio" src="../branding/ganktronics.png" alt="Ganktronics">
+  <svg id="wordmark" class="wordmark" viewBox="0 0 560 140" role="img" aria-label="BossTrack">
+    <defs>
+      <linearGradient id="boss" x1="0" y1="0" x2="0" y2="1"><stop offset="0.15" stop-color="#e59f88"/><stop offset="0.85" stop-color="#e55388"/></linearGradient>
+      <linearGradient id="track" x1="0" y1="0" x2="0" y2="1"><stop offset="0.15" stop-color="#bad5cc"/><stop offset="0.85" stop-color="#5ac5cc"/></linearGradient>
+    </defs>
+    <text class="edge" x="280" y="98"><tspan>Boss</tspan><tspan>Track</tspan></text>
+    <text class="face" x="280" y="98"><tspan fill="url(#boss)">Boss</tspan><tspan fill="url(#track)">Track</tspan></text>
+  </svg>
+  <span id="version" class="version"></span>
+  <script src="splash.js"></script>
+</body>
+</html>
